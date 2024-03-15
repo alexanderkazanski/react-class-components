@@ -1,38 +1,38 @@
-import { Fragment, Component } from 'react';
+import { Fragment, Component } from "react";
 
-import Users from './Users';
-import classes from './UserFinder.module.css';
+import Users from "./Users";
+import classes from "./UserFinder.module.css";
+import ErrorBoundary from "./ErrorBoundary";
 
 const DUMMY_USERS = [
-  { id: 'u1', name: 'Max' },
-  { id: 'u2', name: 'Manuel' },
-  { id: 'u3', name: 'Julie' },
+  { id: "u1", name: "Max" },
+  { id: "u2", name: "Manuel" },
+  { id: "u3", name: "Julie" },
 ];
 
 class UserFinder extends Component {
   constructor() {
     super();
     this.state = {
-      filteredUser: [],
-      searchTerm: ''
-    }
+      filteredUser: DUMMY_USERS,
+      searchTerm: "",
+    };
   }
   searchChangeHandler(event) {
-    this.setState({ searchTerm: event.target.value })
+    this.setState({ searchTerm: event.target.value });
   }
 
-  componentDidMount() {
-    // Send http request...
-    this.setState({ filteredUsers: this.context.users })
+  componentWillMount() {
+    this.setState({ filteredUsers: DUMMY_USERS });
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchTerm !== this.state.searchTerm) {
       this.setState({
-        filteredUsers: DUMMY_USERS.filter(
-          (user) => user.name.includes(this.state.searchTerm)
-        )
-      })
+        filteredUsers: DUMMY_USERS.filter((user) =>
+          user.name.includes(this.state.searchTerm)
+        ),
+      });
     }
   }
 
@@ -40,13 +40,14 @@ class UserFinder extends Component {
     return (
       <Fragment>
         <div className={classes.finder}>
-          <input type='search' onChange={this.searchChangeHandler.bind(this)} />
+          <input type="search" onChange={this.searchChangeHandler.bind(this)} />
         </div>
-        <Users users={this.state.filteredUsers} />
+        <ErrorBoundary>
+          <Users users={this.state.filteredUsers} />
+        </ErrorBoundary>
       </Fragment>
-    )
+    );
   }
 }
-
 
 export default UserFinder;
